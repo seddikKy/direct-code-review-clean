@@ -1,0 +1,17 @@
+.App html {
+    background-color: lightgray;
+}
+
+div.App {
+    max-width: 800px;
+    margin:auto;
+    text-align: center;
+}
+
+.App h2 {
+    text-align: center;
+}
+
+#List {
+    text-align: left;
+}

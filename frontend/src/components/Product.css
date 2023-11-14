@@ -1,0 +1,10 @@
+.product {
+    display: flex;
+}
+
+.col {
+    flex: 1;
+    background: #CCC;
+    padding: 5px;
+    margin-bottom: 10px;
+}
