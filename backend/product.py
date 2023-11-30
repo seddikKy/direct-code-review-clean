@@ -1,6 +1,5 @@
-from enum import Enum
 from abc import ABC, abstractmethod
-
+from enum import Enum
 
 
 class ProductType(Enum):
@@ -25,66 +24,69 @@ class Product(ABC):
         pass
 
     @abstractmethod
-    def _base_price(self):
+    def base_price(self):
         pass
 
-    def to_json(self):
-        return JsonConverter().to_json(self)
-    
 
-class JsonConverter:
-    @staticmethod
-    def to_json(product:Product):
-        return {
-            'name': product._name,
-            'type': product.product_type().value,
-            'price': product.price(),
-            'discount': product._discount,
-            'free': product._free,
-            'assets': product._number_of_assets
-        }
+class ProductDiscountFactor(Product):
+    @abstractmethod
+    def discount_factor(self):
+        pass
 
 
 class DigitalProduct(Product):
     def price(self):
-        return self._base_price()
-    
-    def _base_price(self):
-        return 1000
-    
-    def product_type(self):
-        return ProductType.Digital
-    
+        return self.base_price()
 
-class PackageProduct(Product):
+    def product_type(self):
+        return ProductType.Digital.value
+
+    def base_price(self):
+        return 1000
+
+
+class PackageProduct(ProductDiscountFactor):
     def price(self):
         if self._number_of_assets > 2:
-                return self._base_price() * self._number_of_assets * self._discount_factor()
+            return self.base_price() * self._number_of_assets * self.discount_factor()
         else:
-            return max([100, self._base_price() * self._number_of_assets])
-    
-    def _base_price(self):
-        return 1000
-        
+            return max([100, self.base_price() * self._number_of_assets])
+
     def product_type(self):
-        return ProductType.Package
-    
-    def _discount_factor(self):
+        return ProductType.Package.value
+
+    def discount_factor(self):
         return 0.9
 
-    
+    def base_price(self):
+        return 1000
+
+
 class PromotionalProduct(Product):
     def price(self):
         if not self._free:
             return self._calculate_base_price_with_discount(self._discount)
         return 0
-    
-    def product_type(self):
-        return ProductType.Promotional
 
-    def _base_price(self):
-        return 1000
-    
+    def product_type(self):
+        return ProductType.Promotional.value
+
     def _calculate_base_price_with_discount(self, discount):
-        return max([500, self._base_price() - self._base_price() * discount/100.0])
+        return max([500, self.base_price() - self.base_price() * discount/100.0])
+
+    def base_price(self):
+        return 1000
+
+
+class JsonConverter:
+    @staticmethod
+    def to_json(product: Product):
+        return {
+            'name': product._name,
+            'type': product.product_type(),
+            'price': product.price(),
+            'discount': product._discount,
+            'free': product._free,
+            'assets': product._number_of_assets
+        }
 
