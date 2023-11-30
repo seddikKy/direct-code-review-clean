@@ -27,6 +27,9 @@ class Product(ABC):
     def base_price(self):
         pass
 
+    def to_json(self):
+        return JsonConverter().to_json(self)
+
 
 class ProductDiscountFactor(Product):
     @abstractmethod
